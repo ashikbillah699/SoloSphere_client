@@ -1,9 +1,43 @@
-import { useState } from 'react'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import { useContext } from "react";
+import { AuthContext } from "../providers/AuthProvider";
+import axios from "axios";
+
 
 const AddJob = () => {
-  const [startDate, setStartDate] = useState(new Date())
+  const { user } = useContext(AuthContext)
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const title = e.target.job_title.value;
+    const email = e.target.email.value;
+    const deadline = e.target.deadline.value;
+    const category = e.target.category.value;
+    const min_price = e.target.min_price.value;
+    const max_price = e.target.max_price.value;
+    const description = e.target.description.value;
+    // console.log(title, email, deadline, category, min_price, max_price, description);
+    const addJobData = {
+      title,
+      buyer: {
+        email,
+        name: user?.displayName,
+        photoUrl: user?.photoURL
+      },
+      email,
+      deadline,
+      category,
+      min_price,
+      max_price,
+      description
+    }
+    // console.log(addJobData);
+    const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/addJob`,
+      addJobData
+    )
+    console.log(data)
+  }
+
+
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
@@ -12,7 +46,7 @@ const AddJob = () => {
           Post a Job
         </h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className='grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2'>
             <div>
               <label className='text-gray-700 ' htmlFor='job_title'>
@@ -34,18 +68,13 @@ const AddJob = () => {
                 id='emailAddress'
                 type='email'
                 name='email'
+                value={user?.email}
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               />
             </div>
             <div className='flex flex-col gap-2 '>
               <label className='text-gray-700'>Deadline</label>
-
-              {/* Date Picker Input Field */}
-              <DatePicker
-                className='border p-2 rounded-md'
-                selected={startDate}
-                onChange={date => setStartDate(date)}
-              />
+              <input type="date" name="deadline" id="" className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring' />
             </div>
 
             <div className='flex flex-col gap-2 '>
