@@ -1,13 +1,67 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
+import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../providers/AuthProvider';
+import { format } from 'date-fns';
+import Swal from 'sweetalert2';
 
 const MyPostedJobs = () => {
+  const { user } = useContext(AuthContext);
+  const [Jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    allJobsData()
+  }, [])
+
+  const allJobsData = async () => {
+    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allJobs/${user?.email}`)
+    setJobs(data);
+  }
+  console.log(Jobs)
+
+  const handleDelete = async id => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+
+      if (result.isConfirmed) {
+        try {
+          const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/job/${id}`)
+          console.log(data)
+          allJobsData()
+          if (data.deletedCount) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
+          }
+        } 
+        catch (err) {
+          console.log(err.message)
+        }
+      }
+    });
+
+
+
+  }
+
   return (
     <section className='container px-4 mx-auto pt-12'>
       <div className='flex items-center gap-x-3'>
         <h2 className='text-lg font-medium text-gray-800 '>My Posted Jobs</h2>
 
         <span className='px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full '>
-          4 Job
+          {Jobs.length} Job
         </span>
       </div>
 
@@ -62,34 +116,38 @@ const MyPostedJobs = () => {
                   </tr>
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200 '>
-                  <tr>
+                  {Jobs.map(job => <tr key={job._id}>
                     <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                      E-commerce Website Development
+                      {job.title}
                     </td>
 
                     <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                      28/05/2024
+                      {format(new Date(job.deadline), "PP")}
+                      {/* {
+                        job.deadline
+                      } */}
                     </td>
 
                     <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                      $500-$600
+                      ${job.min_price}-${job.max_price}
                     </td>
                     <td className='px-4 py-4 text-sm whitespace-nowrap'>
                       <div className='flex items-center gap-x-2'>
                         <p
                           className={`px-3 py-1  text-blue-500 bg-blue-100/60 text-xs  rounded-full`}
                         >
-                          Web Development
+                          {job.category}
                         </p>
                       </div>
                     </td>
                     <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                      Dramatically redefine bleeding-edge...
+                      {job.description.substring(0, 20)}...
                     </td>
                     <td className='px-4 py-4 text-sm whitespace-nowrap'>
                       <div className='flex items-center gap-x-6'>
-                        <button className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
+                        <button onClick={() => handleDelete(job._id)} className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
                           <svg
+
                             xmlns='http://www.w3.org/2000/svg'
                             fill='none'
                             viewBox='0 0 24 24'
@@ -106,7 +164,7 @@ const MyPostedJobs = () => {
                         </button>
 
                         <Link
-                          to={`/update/1`}
+                          to={`/update/${job._id}`}
                           className='text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none'
                         >
                           <svg
@@ -126,7 +184,8 @@ const MyPostedJobs = () => {
                         </Link>
                       </div>
                     </td>
-                  </tr>
+                  </tr>)}
+
                 </tbody>
               </table>
             </div>

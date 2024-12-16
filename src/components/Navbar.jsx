@@ -18,7 +18,7 @@ const Navbar = () => {
             <Link to='/'>Home</Link>
           </li>
           <li className='mr-1'>
-            <Link to='/jobs'>All Jobs</Link>
+            <Link to='/allJobs'>All Jobs</Link>
           </li>
 
           {!user && (
@@ -53,7 +53,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className='mb-1'>
-                <Link to='/my-posted-jobs'>My Posted Jobs</Link>
+                <Link to='/myPostedJobs'>My Posted Jobs</Link>
               </li>
               <li className='mb-1'>
                 <Link to='/my-bids'>My Bids</Link>
