@@ -1,10 +1,31 @@
-import { useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import axios from 'axios'
+import {  useEffect, useState } from 'react'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useParams } from 'react-router-dom'
+// import { AuthContext } from '../providers/AuthProvider'
 
 const JobDetails = () => {
   const [startDate, setStartDate] = useState(new Date())
+  // const {user} = useContext(AuthContext);
+  const {id} = useParams();
+  // const navigate = useNavigate()
+
+  const [job, setJob] = useState({});
+
+  const allJobsData = async() =>{
+    const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/job/${id}`)
+    setJob(data);
+    // setStartDate(new Date(data.deadline))
+  }
+
+  useEffect(()=>{
+    allJobsData()
+  },[])
+
+  console.log(job)
 
   return (
     <div className='flex flex-col md:flex-row justify-around gap-5  items-center min-h-[calc(100vh-306px)] md:max-w-screen-xl mx-auto '>

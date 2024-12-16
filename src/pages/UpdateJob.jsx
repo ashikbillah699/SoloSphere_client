@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios'
 import { useContext, useEffect, useState } from 'react'
-// import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import toast from 'react-hot-toast'
 import { useNavigate, useParams } from 'react-router-dom'

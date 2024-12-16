@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthProvider';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 import Swal from 'sweetalert2';
 
 const MyPostedJobs = () => {
@@ -122,10 +122,10 @@ const MyPostedJobs = () => {
                     </td>
 
                     <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>
-                      {format(new Date(job.deadline), "PP")}
-                      {/* {
+                      {/* {format(new Date(job.deadline), "PP")} */}
+                      {
                         job.deadline
-                      } */}
+                      }
                     </td>
 
                     <td className='px-4 py-4 text-sm text-gray-500  whitespace-nowrap'>

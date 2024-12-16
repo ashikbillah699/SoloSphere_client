@@ -4,21 +4,16 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
-
 
 const AddJob = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(null);
 
   const handleSubmit = async e => {
     e.preventDefault();
     const title = e.target.job_title.value;
     const email = e.target.email.value;
-    // const deadline = e.target.deadline.value;
+    const deadline = e.target.deadline.value;
     const category = e.target.category.value;
     const min_price = e.target.min_price.value;
     const max_price = e.target.max_price.value;
@@ -31,7 +26,7 @@ const AddJob = () => {
         name: user?.displayName,
         photoUrl: user?.photoURL
       },
-      deadline:setSelectedDate,
+      deadline,
       category,
       min_price,
       max_price,
@@ -86,16 +81,10 @@ const AddJob = () => {
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               />
             </div>
-            <div className="flex flex-col gap-2 ">
-  <label className="text-gray-700">Deadline</label>
-  <DatePicker
-    selected={selectedDate}
-    onChange={(date) => setSelectedDate(date)}
-    dateFormat="yyyy-MM-dd"
-    placeholderText="Select a date"
-    className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
-  />
-</div>
+            <div className='flex flex-col gap-2 '>
+              <label className='text-gray-700'>Deadline</label>
+              <input type="date" name="deadline" id="" className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring' />
+            </div>
 
             <div className='flex flex-col gap-2 '>
               <label className='text-gray-700 ' htmlFor='category'>
