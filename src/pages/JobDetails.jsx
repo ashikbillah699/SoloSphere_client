@@ -1,15 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios'
-import {  useEffect, useState } from 'react'
+import {  useContext, useEffect, useState } from 'react'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useParams } from 'react-router-dom'
-// import { AuthContext } from '../providers/AuthProvider'
+import { AuthContext } from '../providers/AuthProvider'
+import { compareAsc } from 'date-fns'
+import toast from 'react-hot-toast'
 
 const JobDetails = () => {
   const [startDate, setStartDate] = useState(new Date())
-  // const {user} = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const {id} = useParams();
   // const navigate = useNavigate()
 
@@ -25,8 +27,41 @@ const JobDetails = () => {
     allJobsData()
   },[])
 
-  console.log(job)
   const {category, deadline, description,max_price, min_price, title,buyer} = job || {};
+
+  // Handle form submit
+  const handleSubmit = e =>{
+    e.preventDefault();
+    const price = e.target.price.value;
+    const email = user?.email;
+    const comment = e.target.comment.value;
+    const newDeadline = startDate;
+    const formData = {price, email, comment, newDeadline};
+    
+    // cheack bids parmition validation
+    if(user?.email === buyer?.email){
+      return toast.error('You can not access.')
+    }
+
+    // Deadline crossed validation
+    if(compareAsc(new Date(), new Date(deadline))===1){
+      return toast.error('Deadline Crossed, Binding forbidden.')
+    }
+    
+    const formattedStartDate = new Date(startDate).setHours(0, 0, 0, 0);
+    const formattedDeadline = new Date(deadline).setHours(0, 0, 0, 0);
+    if(compareAsc(new Date(formattedStartDate), new Date(formattedDeadline)) > 0){
+      return toast.error('Offer a date within deadline.')
+    }
+
+    // Price validation
+    if(parseInt(price) > max_price){
+      return toast.error('Offer less of atlist equal to maximam price.')
+    }
+
+    console.table(formData);
+  }
+
   return (
     <div className='flex flex-col md:flex-row justify-around gap-5  items-center min-h-[calc(100vh-306px)] md:max-w-screen-xl mx-auto '>
       {/* Job Details */}
@@ -78,7 +113,7 @@ const JobDetails = () => {
           Place A Bid
         </h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className='grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2'>
             <div>
               <label className='text-gray-700 ' htmlFor='price'>
@@ -98,6 +133,7 @@ const JobDetails = () => {
                 Email Address
               </label>
               <input
+                defaultValue={user?.email}
                 id='emailAddress'
                 type='email'
                 name='email'
