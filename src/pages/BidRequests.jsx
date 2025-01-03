@@ -10,7 +10,7 @@ const BidRequests = () => {
 
 
   const fatchAllBits = async () => {
-    await axios.get(`${import.meta.env.VITE_API_URL}/bids/${user?.email}?buyer=true`)
+    await axios.get(`${import.meta.env.VITE_API_URL}/bids/${user?.email}?buyer=true`, {withCredentials: true})
       .then(res => {
         // console.log(res.data)
         setBidRequs(res.data);
