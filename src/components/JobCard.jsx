@@ -2,9 +2,9 @@
 // import { format } from "date-fns";
 import { Link } from 'react-router-dom'
 
-const JobCard = ({job}) => {
-  console.log(job)
-  const {category, deadline, description,max_price, min_price, title, _id} = job || {};
+const JobCard = ({ job }) => {
+  // console.log(job)
+  const { category, deadline, description, max_price, min_price, title, _id, bid_count } = job || {};
   return (
     <Link
       to={`/jobDetails/${_id}`}
@@ -16,7 +16,7 @@ const JobCard = ({job}) => {
           {deadline}
         </span>
         <span className='px-3 py-1 text-[8px] text-blue-800 uppercase bg-blue-200 rounded-full '>
-         {category}
+          {category}
         </span>
       </div>
 
@@ -26,12 +26,12 @@ const JobCard = ({job}) => {
         </h1>
 
         <p className='mt-2 text-sm text-gray-600 '>
-         {description.substring(0,70)}....
+          {description.substring(0, 70)}....
         </p>
         <p className='mt-2 text-sm font-bold text-gray-600 '>
           Range: ${min_price} - ${max_price}
         </p>
-        <p className='mt-2 text-sm font-bold text-gray-600 '>Total Bids:</p>
+        <p className='mt-2 text-sm font-bold text-gray-600 '>Total Bids:{bid_count}</p>
       </div>
     </Link>
   )

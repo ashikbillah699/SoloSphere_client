@@ -4,7 +4,7 @@ import {  useContext, useEffect, useState } from 'react'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthProvider'
 import { compareAsc } from 'date-fns'
 import toast from 'react-hot-toast'
@@ -13,7 +13,7 @@ const JobDetails = () => {
   const [startDate, setStartDate] = useState(new Date())
   const {user} = useContext(AuthContext);
   const {id} = useParams();
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const [job, setJob] = useState({});
 
@@ -27,16 +27,15 @@ const JobDetails = () => {
     allJobsData()
   },[])
 
-  const {category, deadline, description,max_price, min_price, title,buyer} = job || {};
+  const {category, deadline, description,max_price, min_price, title,buyer, _id} = job || {};
 
   // Handle form submit
-  const handleSubmit = e =>{
+  const handleSubmit = async e =>{
     e.preventDefault();
     const price = e.target.price.value;
     const email = user?.email;
     const comment = e.target.comment.value;
-    const newDeadline = startDate;
-    const formData = {price, email, comment, newDeadline};
+    const jobId = _id;
     
     // cheack bids parmition validation
     if(user?.email === buyer?.email){
@@ -59,7 +58,22 @@ const JobDetails = () => {
       return toast.error('Offer less of atlist equal to maximam price.')
     }
 
-    console.table(formData);
+    const formData = {price, email, comment, deadline:startDate, jobId, title, category, status: 'panding', buyer: buyer?.email};
+    // console.table(formData);
+
+    try{
+      await axios.post(`${import.meta.env.VITE_API_URL}/bidJob`, formData)
+      .then(res=> {
+        if(res.data.insertedId){
+          e.target.reset();
+          toast.success('Bid successful!!')
+          navigate('/my-bids')
+        }
+      })
+    }catch(err){
+      console.log(err);
+      toast.error(err?.response?.data?.message)
+    }
   }
 
   return (

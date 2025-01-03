@@ -31,7 +31,7 @@ const AddJob = () => {
       min_price,
       max_price,
       description,
-      bid_count: "0",
+      bid_count: 0,
     }
     // console.log(addJobData);
     console.log(import.meta.env.VITE_API_URL);

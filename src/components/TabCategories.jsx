@@ -16,7 +16,7 @@ const TabCategories = () => {
   useEffect(()=>{
     allJobsData()
   },[])
-  console.log(Jobs)
+  // console.log(Jobs)
 
   return (
     <Tabs>
